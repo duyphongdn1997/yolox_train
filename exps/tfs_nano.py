@@ -218,7 +218,7 @@ class Exp(MyExp):
         valdataset = COCODataset(
             data_dir=self.data_dir,
             json_file=self.val_ann if not testdev else "image_info_test-dev2017.json",
-            name="val" if not testdev else "test",
+            name="val2017" if not testdev else "test2017",
             img_size=self.test_size,
             preproc=ValTransform(),
         )
