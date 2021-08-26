@@ -150,24 +150,24 @@ class Exp(MyExp):
 
         return train_loader
 
-    def random_resize(self, data_loader, epoch, rank, is_distributed):
-        tensor = torch.LongTensor(2).cuda()
+    # def random_resize(self, data_loader, epoch, rank, is_distributed):
+    #     tensor = torch.LongTensor(2).cuda()
 
-        if rank == 0:
-            size_factor = self.input_size[1] * 1.0 / self.input_size[0]
-            size = random.randint(*self.random_size)
-            size = (int(32 * size), 32 * int(size * size_factor))
-            tensor[0] = size[0]
-            tensor[1] = size[1]
+    #     if rank == 0:
+    #         size_factor = self.input_size[1] * 1.0 / self.input_size[0]
+    #         size = random.randint(*self.random_size)
+    #         size = (int(32 * size), 32 * int(size * size_factor))
+    #         tensor[0] = size[0]
+    #         tensor[1] = size[1]
 
-        if is_distributed:
-            dist.barrier()
-            dist.broadcast(tensor, 0)
+    #     if is_distributed:
+    #         dist.barrier()
+    #         dist.broadcast(tensor, 0)
 
-        input_size = data_loader.change_input_dim(
-            multiple=(tensor[0].item(), tensor[1].item()), random_range=None
-        )
-        return input_size
+    #     # input_size = data_loader.change_input_dim(
+    #     #     multiple=(tensor[0].item(), tensor[1].item()), random_range=None
+    #     # )
+    #     return input_size
 
     def get_optimizer(self, batch_size):
         if "optimizer" not in self.__dict__:
