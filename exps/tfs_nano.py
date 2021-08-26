@@ -25,7 +25,7 @@ class Exp(MyExp):
 
         # ---------------- dataloader config ---------------- #
         # set worker to 4 for shorter dataloader init time
-        self.data_num_workers = 4
+        self.data_num_workers = 2
         self.input_size = (416, 416)
         self.random_size = (14, 26)
         self.data_dir = "datasets/gw2020"
