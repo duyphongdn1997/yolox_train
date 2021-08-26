@@ -220,9 +220,7 @@ class Exp(MyExp):
             json_file=self.val_ann if not testdev else "image_info_test-dev2017.json",
             name="val" if not testdev else "test",
             img_size=self.test_size,
-            preproc=ValTransform(
-                rgb_means=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
-            ),
+            preproc=ValTransform(),
         )
 
         if is_distributed:
