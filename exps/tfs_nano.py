@@ -136,7 +136,6 @@ class Exp(MyExp):
         batch_sampler = YoloBatchSampler(
             sampler=sampler,
             batch_size=batch_size,
-            input_dimension=self.input_size,
             drop_last=False,
             mosaic=not no_aug,
         )
