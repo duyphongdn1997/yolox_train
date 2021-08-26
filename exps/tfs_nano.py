@@ -38,7 +38,7 @@ class Exp(BaseExp):
         self.mscale = (0.8, 1.6)
         self.shear = 2.0
         self.perspective = 0.0
-        self.enable_mixup = False
+        self.enable_mixup = True
 
         # --------------  training config --------------------- #
         self.warmup_epochs = 5
@@ -80,17 +80,24 @@ class Exp(BaseExp):
         self.model.head.initialize_biases(1e-2)
         return self.model
 
-    def get_data_loader(self, batch_size, is_distributed, no_aug=False):
+    def get_data_loader(self, batch_size, is_distributed, no_aug=False, cache_img=False):
         from yolox.data import (
             COCODataset,
+            TrainTransform,
+            YoloBatchSampler,
             DataLoader,
             InfiniteSampler,
             MosaicDetection,
-            TrainTransform,
-            YoloBatchSampler
+            worker_init_reset_seed,
         )
+        from yolox.utils import (
+            wait_for_the_master,
+            get_local_rank,
+        )
+        local_rank = get_local_rank()
 
-        dataset = COCODataset(
+        with wait_for_the_master(local_rank):
+            dataset = COCODataset(
             data_dir=None,
             name="train",
             json_file=self.train_ann,
@@ -107,18 +114,16 @@ class Exp(BaseExp):
             dataset,
             mosaic=not no_aug,
             img_size=self.input_size,
-            preproc=TrainTransform(
-                rgb_means=(0.485, 0.456, 0.406),
-                std=(0.229, 0.224, 0.225),
-                mirror=self.mirror,
-                max_labels=120,
-            ),
+            preproc=TrainTransform(max_labels=120),
             degrees=self.degrees,
             translate=self.translate,
-            scale=self.scale,
+            mosaic_scale=self.mosaic_scale,
+            mixup_scale=self.mixup_scale,
             shear=self.shear,
             perspective=self.perspective,
             enable_mixup=self.enable_mixup,
+            mosaic_prob=self.mosaic_prob,
+            mixup_prob=self.mixup_prob,
         )
 
         self.dataset = dataset
@@ -126,18 +131,24 @@ class Exp(BaseExp):
         if is_distributed:
             batch_size = batch_size // dist.get_world_size()
 
-        sampler = InfiniteSampler(len(self.dataset), seed=self.seed if self.seed else 0)
+        sampler = InfiniteSampler(
+            len(self.dataset), seed=self.seed if self.seed else 0
+        )
 
         batch_sampler = YoloBatchSampler(
             sampler=sampler,
             batch_size=batch_size,
-            drop_last=False,
             input_dimension=self.input_size,
+            drop_last=False,
             mosaic=not no_aug,
         )
 
         dataloader_kwargs = {"num_workers": self.data_num_workers, "pin_memory": True}
         dataloader_kwargs["batch_sampler"] = batch_sampler
+
+        # Make sure each process has different random seed, especially for 'fork' method
+        dataloader_kwargs["worker_init_fn"] = worker_init_reset_seed
+
         train_loader = DataLoader(self.dataset, **dataloader_kwargs)
 
         return train_loader
