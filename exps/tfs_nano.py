@@ -61,24 +61,24 @@ class Exp(BaseExp):
         self.test_conf = 0.01
         self.nmsthre = 0.65
 
-    def get_model(self, sublinear=False):
+    # def get_model(self, sublinear=False):
 
-        def init_yolo(M):
-            for m in M.modules():
-                if isinstance(m, nn.BatchNorm2d):
-                    m.eps = 1e-3
-                    m.momentum = 0.03
-        if "model" not in self.__dict__:
-            from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
-            in_channels = [256, 512, 1024]
-            # NANO model use depthwise = True, which is main difference.
-            backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, depthwise=True)
-            head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, depthwise=True)
-            self.model = YOLOX(backbone, head)
+    #     def init_yolo(M):
+    #         for m in M.modules():
+    #             if isinstance(m, nn.BatchNorm2d):
+    #                 m.eps = 1e-3
+    #                 m.momentum = 0.03
+    #     if "model" not in self.__dict__:
+    #         from yolox.models import YOLOX, YOLOPAFPN, YOLOXHead
+    #         in_channels = [256, 512, 1024]
+    #         # NANO model use depthwise = True, which is main difference.
+    #         backbone = YOLOPAFPN(self.depth, self.width, in_channels=in_channels, depthwise=True)
+    #         head = YOLOXHead(self.num_classes, self.width, in_channels=in_channels, depthwise=True)
+    #         self.model = YOLOX(backbone, head)
 
-        self.model.apply(init_yolo)
-        self.model.head.initialize_biases(1e-2)
-        return self.model
+    #     self.model.apply(init_yolo)
+    #     self.model.head.initialize_biases(1e-2)
+    #     return self.model
 
     def get_data_loader(self, batch_size, is_distributed, no_aug=False, cache_img=False):
         from yolox.data import (
@@ -98,7 +98,7 @@ class Exp(BaseExp):
 
         with wait_for_the_master(local_rank):
             dataset = COCODataset(
-            data_dir=None,
+            data_dir=self.data_dir,
             name="train",
             json_file=self.train_ann,
             img_size=self.input_size,
@@ -215,7 +215,7 @@ class Exp(BaseExp):
         from yolox.data import COCODataset, ValTransform
 
         valdataset = COCODataset(
-            data_dir=None,
+            data_dir=self.data_dir,
             json_file=self.val_ann if not testdev else "image_info_test-dev2017.json",
             name="val" if not testdev else "test",
             img_size=self.test_size,
