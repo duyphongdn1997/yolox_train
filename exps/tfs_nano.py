@@ -101,7 +101,7 @@ class Exp(MyExp):
         with wait_for_the_master(local_rank):
             dataset = COCODataset(
             data_dir=self.data_dir,
-            name="train",
+            name="train2017",
             json_file=self.train_ann,
             img_size=self.input_size,
             preproc=TrainTransform(max_labels=120),
