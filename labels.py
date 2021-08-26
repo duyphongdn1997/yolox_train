@@ -1,0 +1,3 @@
+COCO_CLASSES = [
+    'wheat'
+]
