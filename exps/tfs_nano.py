@@ -33,7 +33,7 @@ class Exp(MyExp):
         self.val_ann = "instances_val2017.json"
 
         # --------------- transform config ----------------- #
-        self.mirror = 0.5
+        self.mirror = 0.0
         self.degrees = 10.0
         self.translate = 0.1
         self.scale = (0.5, 1.5)
@@ -43,7 +43,7 @@ class Exp(MyExp):
         self.enable_mixup = True
 
         # --------------  training config --------------------- #
-        self.warmup_epochs = 5
+        self.warmup_epochs = 0
         self.max_epoch = 40
         self.warmup_lr = 2
         self.basic_lr_per_img = 0.01 / 8.0
