@@ -25,7 +25,7 @@ class Exp(MyExp):
 
         # ---------------- dataloader config ---------------- #
         # set worker to 4 for shorter dataloader init time
-        self.data_num_workers = 2
+        self.data_num_workers = 4
         self.input_size = (416, 416)
         self.random_size = (14, 26)
         self.data_dir = "datasets/gw2020"
@@ -33,7 +33,7 @@ class Exp(MyExp):
         self.val_ann = "instances_val2017.json"
 
         # --------------- transform config ----------------- #
-        self.mirror = 0.0
+        self.mirror = 0.5
         self.degrees = 10.0
         self.translate = 0.1
         self.scale = (0.5, 1.5)
