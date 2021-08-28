@@ -28,7 +28,7 @@ class Exp(MyExp):
         self.data_num_workers = 2
         self.input_size = (416, 416)
         self.random_size = (14, 26)
-        self.data_dir = "datasets/gw2020"
+        self.data_dir = "datasets/gw2020/YOLOV5_COCO_format/"
         self.train_ann = "instances_train2017.json"
         self.val_ann = "instances_val2017.json"
 
