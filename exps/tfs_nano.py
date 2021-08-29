@@ -60,7 +60,7 @@ class Exp(MyExp):
         
         # -----------------  testing config ------------------ #
         self.test_size = (416, 416)
-        self.test_conf = 0.01
+        self.test_conf = 0.6
         self.nmsthre = 0.65
 
     # def get_model(self, sublinear=False):
