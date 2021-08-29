@@ -9,12 +9,9 @@ import torch.nn as nn
 import os
 import random
 
-from yolox.data import get_yolox_datadir
-from yolox.exp import Exp as MyExp
 
 
-
-class Exp(MyExp):
+class Exp():
     def __init__(self):
         super().__init__()
 
