@@ -26,7 +26,7 @@ class Exp(MyExp):
         # ---------------- dataloader config ---------------- #
         # set worker to 4 for shorter dataloader init time
         self.data_num_workers = 4
-        self.input_size = (416, 416)
+        self.input_size = (512, 512)
         self.random_size = (14, 26)
         self.data_dir = "datasets/gw2020"
         self.train_ann = "instances_train2017.json"
@@ -59,8 +59,8 @@ class Exp(MyExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
         
         # -----------------  testing config ------------------ #
-        self.test_size = (416, 416)
-        self.test_conf = 0.6
+        self.test_size = (512, 512)
+        self.test_conf = 0.45
         self.nmsthre = 0.65
 
     # def get_model(self, sublinear=False):
